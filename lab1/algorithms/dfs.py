@@ -11,7 +11,7 @@ class DepthFirstSearch(BeenarTree):
         """
         Depth First Search - DFS
         """
-        self.log.append('Current top - {};'.format(v))
+        self.log.append('Vertex = {};'.format(v))
         if v in self.visited:
             return
         self.visited.add(v)
