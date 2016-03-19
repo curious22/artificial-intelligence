@@ -1,17 +1,21 @@
 from Tkinter import *
 from tkintertable import TableCanvas
 
-import lab1.algorithms.dfs_bfs as dbs
+from lab1.algorithms.dfs import DepthFirstSearch
 
 
 def calculate_results():
+    obj = DepthFirstSearch()
+
     top_from_entry = starting_vertex.get()
     top = int(top_from_entry) if top_from_entry else 1
-    data = dbs.transfer_data(table.model.data)
-    dbs.dfs(top, data)
-    for index, string in enumerate(dbs.log):
+
+    data = obj.transfer_data(table.model.data)
+    obj.dfs(top, data)
+
+    for index, string in enumerate(obj.log):
         lable_dfs_result.insert(index, string)
-    lable_dfs_result.insert(0, 'Result: ' + ', '.join([str(i) for i in dbs.visited]))
+    lable_dfs_result.insert(len(obj.log) + 1, 'Result: ' + ', '.join([str(i) for i in obj.visited]))
 
 root = Tk()
 root.title(string='Lab 1')
