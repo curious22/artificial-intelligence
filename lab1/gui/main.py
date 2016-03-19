@@ -1,11 +1,13 @@
 from Tkinter import *
 from tkintertable import TableCanvas
 
-from lab1.algorithms.breadth_first_search import transfer_data
+import lab1.algorithms.dfs_bfs as dbs
 
 
-def collect_data():
-    transfer_data(table.model.data)
+def calculate_results():
+    data = dbs.transfer_data(table.model.data)
+    dbs.dfs(1, data)
+    print dbs.visited
 
 root = Tk()
 
@@ -17,7 +19,7 @@ table.createTableFrame()
 
 add_row_button = Button(text='Add row', command=table.addRow)
 delete_row_button = Button(text='Delete row', command=table.deleteRow)
-calculate_button = Button(text='Calculate results', command=collect_data)
+calculate_button = Button(text='Calculate results', command=calculate_results)
 
 add_row_button.grid(column=0, row=1)
 delete_row_button.grid(column=0, row=2)
