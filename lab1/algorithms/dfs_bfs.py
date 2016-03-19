@@ -12,12 +12,14 @@ def transfer_data(dict_data):
     return result
 
 visited = set()
+log = []
 
 
 def dfs(v, data):
     """
     Depth First Search - DFS
     """
+    log.append('Current top - {};'.format(v))
     if v in visited:
         return
     visited.add(v)
