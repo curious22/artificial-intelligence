@@ -1,5 +1,6 @@
 Pmw==2.0.1
 argparse==1.2.1
+canvasvg==1.0.0
 numpy==1.10.4
 tkintertable==1.2
 wsgiref==0.1.2
