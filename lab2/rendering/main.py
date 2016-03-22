@@ -11,17 +11,23 @@ class RenderingNeuralNetwork(object):
         self.pen.speed(0)
         self.pen.hideturtle()
 
-    def draw_neuron(self, center, radius):
+    def draw_neuron(self, center, radius, color):
         """Rendering a single neuron"""
         self.pen.up()
+        self.pen.color(color)
         self.pen.goto(center)
 
         self.pen.setheading(0)
         self.pen.forward(radius)
         self.pen.setheading(90)
-        self.pen.pendown()
 
+        # draw circle
+        self.pen.begin_fill()
+        self.pen.pendown()
         self.pen.circle(radius)
+        self.pen.end_fill()
+
+        self.pen.color('black')
         self.pen.up()
         self.pen.goto(center)
         self.pen.setheading(0)
@@ -33,10 +39,6 @@ class RenderingNeuralNetwork(object):
 
         self.pen.down()
         self.pen.goto(second_dot)
-
-    def calculation_distance(self):
-        """Calculation of distance between neurons, layers."""
-        pass
 
 
 class SaveImage(object):
@@ -121,30 +123,59 @@ class CalculationDistance(object):
         self.calculate_center_coordinates()
 
     def calculate_outputs(self):
-        print 'outputs'
+        distance_betwen_n = self.distance_between_neurons()
+        coords = []
+
+        last_layer = [i for i in self.central_coordinates.keys()][-1]
+        coord_x = self.central_coordinates[last_layer][0][0] \
+                  + self.distance_between_layers()  # take X coord last of layers
+        coord_y = 320
+
+        for index, n in enumerate(xrange(1, self.number_of_outputs + 1)):
+            if index:
+                coord_y -= distance_betwen_n
+
+            coords.append((coord_x, coord_y))
+        self.outputs_coordinates['output'] = coords
+        pprint(self.outputs_coordinates)
+
 
 if __name__ == '__main__':
-    # draw = RenderingNeuralNetwork()
+    draw = RenderingNeuralNetwork()
 
-    # def darw_link(target, layer):
-    #     for neuron in layer:
-    #         draw.draw_link(target, neuron)
+    def darw_link(target, layer):
+        for neuron in layer:
+            draw.draw_link(target, neuron)
 
-    calc = CalculationDistance(2, 2, 3, 3)
+    calc = CalculationDistance(3, 3, 10, 5)  # input, output, layers, neurons
     calc.calculate_inputs()
-    # calc.calculate_center_coordinates()
-    # for layer in sorted(calc.central_coordinates.keys()):
-    #     for n in calc.central_coordinates[layer]:
-    #         draw.draw_neuron(n, calc.radius)
-    #
-    # for index, layer in enumerate(sorted(calc.central_coordinates.keys()), 1):
-    #     for n in calc.central_coordinates[layer]:
-    #         if index != len(calc.central_coordinates.keys()):
-    #             darw_link(n, calc.central_coordinates[layer + 1])
 
-    # s = SaveImage()
-    # s.save()
-    # tr.mainloop()
+    # draw input
+    for input_l in calc.inputs_coordinates['input']:
+        draw.draw_neuron(input_l, calc.radius, 'orange')
 
-    # TODO: layers paint in different colors
-    # TODO: add output parameters
+    # draw neurons
+    for layer in sorted(calc.central_coordinates.keys()):
+        for n in calc.central_coordinates[layer]:
+            draw.draw_neuron(n, calc.radius, 'green')
+
+    # drow output
+    for output_l in calc.outputs_coordinates['output']:
+        draw.draw_neuron(output_l, calc.radius, 'blue')
+
+    # draw links
+    for input_l in calc.inputs_coordinates['input']:
+        darw_link(input_l, calc.central_coordinates[1])
+
+    for index, layer in enumerate(sorted(calc.central_coordinates.keys()), 1):
+        for n in calc.central_coordinates[layer]:
+            if index != len(calc.central_coordinates.keys()):
+                darw_link(n, calc.central_coordinates[layer + 1])
+
+    for output_l in calc.outputs_coordinates['output']:
+        last_layer = [i for i in calc.central_coordinates.keys()][-1]
+        darw_link(output_l, calc.central_coordinates[last_layer])
+
+    s = SaveImage()
+    s.save()
+    tr.mainloop()
