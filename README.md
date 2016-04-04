@@ -2,6 +2,7 @@
 
 ## Установка
 Зависимости: я использовал Miniconda для Linux (http://conda.pydata.org/miniconda.html), Python 2.7
+
 1. Клонировать репозиторий `git clone https://github.com/curious22/artificial-intelligence.git`
 2. Переходим в папку artificial-intelligence
 3. Запустить скрипт `bash run.sh` или:
