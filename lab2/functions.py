@@ -16,8 +16,6 @@ class BaseFunctions(object):
         self.h = h
         self.m = m
 
-    conf_round = lambda x: round(x, 3)
-
     def counting_number_neurons(self):
         self.V = self.layers * self.neurons
 
@@ -40,7 +38,9 @@ class BaseFunctions(object):
             return 0
 
     def func5(self):
-        pass
+        first_result = 1 / (math.exp(self.V) + math.exp(self.V * (-1) - 1))
+        second_result = pow(self.V * (-1), 2)
+        return first_result, math.exp(second_result)
 
 
 if __name__ == '__main__':
