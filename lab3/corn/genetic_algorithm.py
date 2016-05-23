@@ -7,6 +7,7 @@ class Genetic(object):
     def __init__(self, number_of_individuals, number_of_chromosomes):
         self.number_of_individuals = number_of_individuals
         self.number_of_chromosomes = number_of_chromosomes
+
         self.individuals = []
         self.total_amount = 0
         self.number_of_shares = []
@@ -38,9 +39,24 @@ class Genetic(object):
             item['percentage'] = self.get_percentage(item['sum'])
 
         random_values = [random.randint(0, 100) for _ in self.individuals]
-        print(random_values)
 
         self.get_number_of_shares()
+        print(self.number_of_shares)
+        print(random_values)
+
+        #TODO deal with the number of resulting pairs, they
+        # are more than you need
+        ch_i = []
+        for i in random_values:
+            for index, j in enumerate(self.number_of_shares):
+                if index > 0:
+                    if i < self.number_of_shares[index - 1]:
+                        ch_i.append(index)
+                        break
+                    elif (self.number_of_shares[index - 1] < i
+                          < self.number_of_shares[index]):
+                        ch_i.append(index)
+        print(ch_i)
 
     def get_total_amount(self):
         for i in self.individuals:
@@ -61,7 +77,8 @@ class Genetic(object):
                          self.individuals[index]['percentage'])
                 self.number_of_shares.append(round(value, 3))
             else:
-                self.number_of_shares.append(self.individuals[index]['percentage'])
+                self.number_of_shares.append(
+                    self.individuals[index]['percentage'])
 
     def crossing(self):
         """Apply genetic operators of crossover and mutation"""
@@ -71,5 +88,5 @@ if __name__ == '__main__':
     obj = Genetic(5, 10)
     obj.generate_individuals()
     obj.selection()
-    print(obj.number_of_shares)
+    # print(obj.number_of_shares)
     # pprint.pprint(obj.individuals)
