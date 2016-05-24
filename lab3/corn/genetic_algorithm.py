@@ -38,25 +38,13 @@ class Genetic(object):
         for item in self.individuals:
             item['percentage'] = self.get_percentage(item['sum'])
 
-        random_values = [random.randint(0, 100) for _ in self.individuals]
+        random_values = [random.randint(1, 99) for _ in self.individuals]
 
         self.get_number_of_shares()
-        print(self.number_of_shares)
-        print(random_values)
+        self.number_of_shares.insert(0, 0) # to correctly determine the range
 
-        #TODO deal with the number of resulting pairs, they
-        # are more than you need
-        ch_i = []
-        for i in random_values:
-            for index, j in enumerate(self.number_of_shares):
-                if index > 0:
-                    if i < self.number_of_shares[index - 1]:
-                        ch_i.append(index)
-                        break
-                    elif (self.number_of_shares[index - 1] < i
-                          < self.number_of_shares[index]):
-                        ch_i.append(index)
-        print(ch_i)
+        pairs = self.get_pairs(random_values)
+        print(pairs)
 
     def get_total_amount(self):
         for i in self.individuals:
@@ -80,12 +68,27 @@ class Genetic(object):
                 self.number_of_shares.append(
                     self.individuals[index]['percentage'])
 
+    def get_pairs(self, random_values):
+        """Determination of pairs for crossing"""
+        ch_i = []
+
+        for i in random_values:
+            for index, j in enumerate(self.number_of_shares):
+
+                if index < len(self.number_of_shares):
+                    if i > j and i < self.number_of_shares[index + 1]:
+                        print('{} < {} < {}'.format(j, i, self.number_of_shares[index + 1]))
+                        ch_i.append(self.number_of_shares.index(j) + 1)
+                        break
+
+        return ch_i
+
     def crossing(self):
         """Apply genetic operators of crossover and mutation"""
         pass
 
 if __name__ == '__main__':
-    obj = Genetic(5, 10)
+    obj = Genetic(6, 10)
     obj.generate_individuals()
     obj.selection()
     # print(obj.number_of_shares)
