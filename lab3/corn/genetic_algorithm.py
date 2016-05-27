@@ -24,7 +24,6 @@ class Genetic(object):
             set_of_chrom = self.get_order_chromosome()
             amount = sum(set_of_chrom)
             individual = {
-                'number': i + 1,
                 'set': set_of_chrom,
                 'sum': amount
             }
@@ -43,15 +42,41 @@ class Genetic(object):
         self.get_number_of_shares()
         self.number_of_shares.insert(0, 0)  # to correctly determine the range
 
-        pairs = self.get_share_of_individuals(random_values)
+        shares = self.get_share_of_individuals(random_values)
 
-        print(pairs)
-        test = self.get_pairs(pairs)
-        print(test)
+        # print(shares)
+        pairs = self.get_pairs(shares)
+        # print(pairs)
 
-    def crossing(self):
+        self.crossing(pairs)
+
+    def crossing(self, list_of_pairs):
         """Apply genetic operators of crossover and mutation"""
-        pass
+        for pair in list_of_pairs:
+            print pair
+            # TODO is whether the upper limit of the number of chromosomes
+            Lk = random.randint(1, 7)
+            first = self.individuals[pair[0] - 1]['set']
+            second = self.individuals[pair[1] - 1]['set']
+
+            # first individual
+            first_set_value = first[:Lk] + second[Lk:]
+            print first_set_value
+            print 'Last sum {}, current sum {}'.format(
+                self.individuals[pair[0] - 1]['sum'],
+                sum(first_set_value))
+            self.individuals[pair[0] - 1]['set'] = first_set_value
+            self.individuals[pair[0] - 1]['sum'] = sum(first_set_value)
+
+            # second individual
+            second_set_value = second[:Lk] + first[Lk:]
+            print second_set_value
+            print 'Last sum {}, current sum {}'.format(
+                self.individuals[pair[1] - 1]['sum'],
+                sum(second_set_value))
+            self.individuals[pair[1] - 1]['set'] = second_set_value
+            self.individuals[pair[1] - 1]['sum'] = sum(second_set_value)
+            print('-' * 20)
 
     # helper functions
     def get_total_amount(self):
@@ -116,6 +141,8 @@ class Genetic(object):
 if __name__ == '__main__':
     obj = Genetic(6, 10)
     obj.generate_individuals()
+    pprint.pprint(obj.individuals)
+
+    print '*' * 100
     obj.selection()
-    # print(obj.number_of_shares)
-    # pprint.pprint(obj.individuals)
+    pprint.pprint(obj.individuals)
