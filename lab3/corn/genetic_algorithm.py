@@ -41,11 +41,19 @@ class Genetic(object):
         random_values = [random.randint(1, 99) for _ in self.individuals]
 
         self.get_number_of_shares()
-        self.number_of_shares.insert(0, 0) # to correctly determine the range
+        self.number_of_shares.insert(0, 0)  # to correctly determine the range
 
-        pairs = self.get_pairs(random_values)
+        pairs = self.get_share_of_individuals(random_values)
+
         print(pairs)
+        test = self.get_pairs(pairs)
+        print(test)
 
+    def crossing(self):
+        """Apply genetic operators of crossover and mutation"""
+        pass
+
+    # helper functions
     def get_total_amount(self):
         for i in self.individuals:
             self.total_amount += i['sum']
@@ -68,8 +76,8 @@ class Genetic(object):
                 self.number_of_shares.append(
                     self.individuals[index]['percentage'])
 
-    def get_pairs(self, random_values):
-        """Determination of pairs for crossing"""
+    def get_share_of_individuals(self, random_values):
+        """Obtaining the number of individual entries"""
         ch_i = []
 
         for i in random_values:
@@ -77,15 +85,33 @@ class Genetic(object):
 
                 if index < len(self.number_of_shares):
                     if i > j and i < self.number_of_shares[index + 1]:
-                        print('{} < {} < {}'.format(j, i, self.number_of_shares[index + 1]))
+                        # print('{} < {} < {}'
+                        #       .format(j, i, self.number_of_shares[index + 1]))
                         ch_i.append(self.number_of_shares.index(j) + 1)
                         break
 
         return ch_i
 
-    def crossing(self):
-        """Apply genetic operators of crossover and mutation"""
-        pass
+    def get_pairs(self, individuals):
+        """
+        Getting pairs for crossing
+
+        -> [2, 2, 5, 4, 5, 4]
+        <- [(2, 5), (2, 4), (5, 4)]
+        """
+        list_of_pairs = []
+        while individuals:
+            for first in individuals:
+                for second in individuals:
+                    if first != second:
+                        list_of_pairs.append((
+                            individuals.pop(individuals.index(first)),
+                            individuals.pop(individuals.index(second))
+                        ))
+                        break
+                break
+
+        return list_of_pairs
 
 if __name__ == '__main__':
     obj = Genetic(6, 10)
