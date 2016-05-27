@@ -32,7 +32,7 @@ class Genetic(object):
 
     def selection(self):
         """The calculation of a share of chromosomes"""
-        self.get_total_amount()
+        self.calculate_total_amount()
 
         for item in self.individuals:
             item['percentage'] = self.get_percentage(item['sum'])
@@ -44,16 +44,13 @@ class Genetic(object):
 
         shares = self.get_share_of_individuals(random_values)
 
-        # print(shares)
         pairs = self.get_pairs(shares)
-        # print(pairs)
-
         self.crossing(pairs)
 
     def crossing(self, list_of_pairs):
         """Apply genetic operators of crossover and mutation"""
         for pair in list_of_pairs:
-            print pair
+            # print pair
             # TODO is whether the upper limit of the number of chromosomes
             Lk = random.randint(1, 7)
             first = self.individuals[pair[0] - 1]['set']
@@ -61,25 +58,25 @@ class Genetic(object):
 
             # first individual
             first_set_value = first[:Lk] + second[Lk:]
-            print first_set_value
-            print 'Last sum {}, current sum {}'.format(
-                self.individuals[pair[0] - 1]['sum'],
-                sum(first_set_value))
+            # print first_set_value
+            # print 'Last sum {}, current sum {}'.format(
+            #     self.individuals[pair[0] - 1]['sum'],
+            #     sum(first_set_value))
             self.individuals[pair[0] - 1]['set'] = first_set_value
             self.individuals[pair[0] - 1]['sum'] = sum(first_set_value)
 
             # second individual
             second_set_value = second[:Lk] + first[Lk:]
-            print second_set_value
-            print 'Last sum {}, current sum {}'.format(
-                self.individuals[pair[1] - 1]['sum'],
-                sum(second_set_value))
+            # print second_set_value
+            # print 'Last sum {}, current sum {}'.format(
+            #     self.individuals[pair[1] - 1]['sum'],
+            #     sum(second_set_value))
             self.individuals[pair[1] - 1]['set'] = second_set_value
             self.individuals[pair[1] - 1]['sum'] = sum(second_set_value)
-            print('-' * 20)
 
     # helper functions
-    def get_total_amount(self):
+    def calculate_total_amount(self):
+        self.total_amount = 0
         for i in self.individuals:
             self.total_amount += i['sum']
 
@@ -92,6 +89,7 @@ class Genetic(object):
         -> [4, 8, 67, 87, 50]
         <- [20.0, 43.333, 63.333, 80.0, 100.0]
         """
+        self.number_of_shares = []
         for index, i in enumerate(self.individuals):
             if index != 0:
                 value = (self.number_of_shares[index - 1] +
@@ -104,7 +102,6 @@ class Genetic(object):
     def get_share_of_individuals(self, random_values):
         """Obtaining the number of individual entries"""
         ch_i = []
-
         for i in random_values:
             for index, j in enumerate(self.number_of_shares):
 
@@ -134,15 +131,26 @@ class Genetic(object):
                             individuals.pop(individuals.index(second))
                         ))
                         break
+                    elif len(set(individuals)) <= 2:
+                        individuals = []
+                        break
                 break
 
         return list_of_pairs
 
 if __name__ == '__main__':
-    obj = Genetic(6, 10)
+    obj = Genetic(10, 12)
     obj.generate_individuals()
     pprint.pprint(obj.individuals)
-
-    print '*' * 100
     obj.selection()
     pprint.pprint(obj.individuals)
+
+    for _ in xrange(100):
+        print '#{}'.format(_)
+        obj.selection()
+        pprint.pprint(obj.individuals)
+        test = [i['sum'] for i in obj.individuals]
+
+        if 10 in test:
+            print 'Win in {} generation'.format(_)
+            break
